@@ -2,6 +2,7 @@
 
 """Show openend ports (netstat -nlp) and their associated processes."""
 
+import os
 import re
 import socket
 import subprocess
@@ -55,7 +56,11 @@ def process_names():
     proc_names = {}
     for process in psutil.process_iter(attrs=["pid", "name", "cmdline"]):
         proc = types.SimpleNamespace(**process.info)
-        proc_names[proc.pid] = proc.name
+        if proc.name == 'python':                                                         
+            python_script = os.path.basename(proc.cmdline[1])                             
+            proc_names[proc.pid] = proc.name + ' ' + python_script
+        else:
+            proc_names[proc.pid] = proc.name
     return proc_names
 
 
