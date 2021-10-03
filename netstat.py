@@ -5,6 +5,7 @@
 import os
 import re
 import socket
+from socket import AF_INET, SOCK_STREAM, SOCK_DGRAM
 import subprocess
 import types
 
@@ -13,10 +14,10 @@ import psutil
 
 AF_INET6 = getattr(socket, "AF_INET6", object())
 PROTO_MAP = {
-    (socket.AF_INET, socket.SOCK_STREAM): "tcp",
-    (AF_INET6, socket.SOCK_STREAM): "tcp6",
-    (socket.AF_INET, socket.SOCK_DGRAM): "udp",
-    (AF_INET6, socket.SOCK_DGRAM): "udp6",
+    (AF_INET, SOCK_STREAM): "tcp",
+    (AF_INET6, SOCK_STREAM): "tcp6",
+    (AF_INET, SOCK_DGRAM): "udp",
+    (AF_INET6, SOCK_DGRAM): "udp6",
 }
 
 
