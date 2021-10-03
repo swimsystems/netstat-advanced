@@ -9,6 +9,7 @@ from socket import AF_INET, SOCK_STREAM, SOCK_DGRAM
 import subprocess
 import types
 
+import docker
 import psutil
 
 
@@ -19,6 +20,25 @@ PROTO_MAP = {
     (AF_INET, SOCK_DGRAM): "udp",
     (AF_INET6, SOCK_DGRAM): "udp6",
 }
+
+
+def docker_container_by_ip(ip_address):
+    """Find docker container name by ip address."""
+    client = docker.from_env()
+    try:
+        containers = client.containers.list()
+    except IOError:
+        return "?"
+
+    ip_by_name = {
+        container.name: [
+            net["IPAddress"]
+            for net in container.attrs["NetworkSettings"]["Networks"].values()
+        ]
+        for container in containers
+    }
+    name_by_ip = {value: key for key in ip_by_name for value in ip_by_name[key]}
+    return name_by_ip[ip_address]
 
 
 def kernel_process_by_port(proto, address):
@@ -58,6 +78,9 @@ def process_names():
         if proc.name.startswith("python"):
             python_script = os.path.basename(proc.cmdline[1])
             proc_names[proc.pid] = proc.name + " " + python_script
+        elif proc.name == "docker-proxy":
+            ip_address = proc.cmdline[proc.cmdline.index("-container-ip") + 1]
+            proc_names[proc.pid] = f"{proc.name} {docker_container_by_ip(ip_address)}"
         else:
             proc_names[proc.pid] = proc.name
     return proc_names
