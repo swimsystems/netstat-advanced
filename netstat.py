@@ -55,7 +55,7 @@ def process_names():
     proc_names = {}
     for process in psutil.process_iter(attrs=["pid", "name", "cmdline"]):
         proc = types.SimpleNamespace(**process.info)
-        if proc.name == "python":
+        if proc.name.startswith("python"):
             python_script = os.path.basename(proc.cmdline[1])
             proc_names[proc.pid] = proc.name + " " + python_script
         else:
