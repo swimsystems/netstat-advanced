@@ -38,16 +38,14 @@ def kernel_process_by_port(proto, address):
             processes.append(
                 (
                     match.group(1),
-                    "{}:{}".format(
-                        match.group(2), 256 * int(match.group(3)) + int(match.group(4))
-                    ),
+                    f"{match.group(2)}:{256 * int(match.group(3)) + int(match.group(4))}",
                     match.group(5),
                 )
             )
 
     for item in processes:
         if item[0] == proto and item[1] == address:
-            return "rpc.{}".format(item[2])
+            return f"rpc.{item[2]}"
     return result
 
 
@@ -84,7 +82,7 @@ def main():
         proc = (
             proc_names[connection.pid]
             if connection.pid
-            else kernel_process_by_port(proto, "{}:{}".format(addr, port))
+            else kernel_process_by_port(proto, f"{addr}:{port}")
         )
         print(templ % (proto, addr, port, connection.pid or "-", proc))
 
