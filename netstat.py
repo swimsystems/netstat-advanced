@@ -50,7 +50,7 @@ def kernel_process_by_port(proto, address):
         return result
     lines = rpcinfo_output.stdout.decode("ascii").splitlines()[:-1]
     regex = re.compile(
-        r"\s+(?:\d+)\s+(?:\d)\s+(\w+)\s+" r"([.:0-9]+)\.(\d+)\.(\d+)\s+(\w+)\s+(?:\w+)"
+        r"\s+(?:\d+)\s+(?:\d)\s+(\w+)\s+([.:0-9]+)\.(\d+)\.(\d+)\s+(\w+)\s+(?:\w+)"
     )
     processes = []
     for line in lines:
